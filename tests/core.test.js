@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { calculateDiscount, getCoupons } from "../src/core";
+import { calculateDiscount, getCoupons, validateUserInput } from "../src/core";
 
 describe("getCoupons", () => {
   test("should return an array of coupons", () => {
@@ -29,6 +29,7 @@ describe("getCoupons", () => {
 });
 
 describe("calculateDiscount", () => {
+  // FIXME: Typescript makes this obsolete
   test("should handle non-numeric price", () => {
     expect(calculateDiscount("10", "SAVE10")).toMatch(/invalid/gi);
   });
@@ -38,6 +39,7 @@ describe("calculateDiscount", () => {
     expect(calculateDiscount(-1, "SAVE10")).toMatch(/invalid/gi);
   });
 
+  // FIXME: Typescript makes this obsolete
   test("should handle non-string discount code", () => {
     expect(calculateDiscount(10, 99)).toMatch(/invalid/gi);
   });
@@ -50,5 +52,43 @@ describe("calculateDiscount", () => {
   test("should handle invalid discount code", () => {
     expect(calculateDiscount(100, "INVALID")).toBe(100);
     expect(calculateDiscount(100, "")).toBe(100);
+  });
+});
+
+describe("validateUserInput", () => {
+  test("should validate successfully when given valid user name", () => {
+    expect(validateUserInput("tlc", 18)).toMatch(/successful/gi);
+  });
+
+  // FIXME: Typescript makes this obsolete
+  test("should handle non-string username", () => {
+    expect(validateUserInput(0xcafebabe, 30)).toMatch(/invalid/gi);
+  });
+
+  test("should handle username < 3 chars", () => {
+    expect(validateUserInput("tl", 18)).toMatch(/invalid/gi);
+  });
+
+  test("should handle username > 255 chars", () => {
+    expect(validateUserInput("t".repeat(256), 18)).toMatch(/invalid/gi);
+  });
+
+  // FIXME: Typescript makes this obsolete
+  test("should handle non-numeric age", () => {
+    expect(validateUserInput("tlc", "18")).toMatch(/invalid/gi);
+  });
+
+  test("should handle age < 18", () => {
+    expect(validateUserInput("tlc", 17)).toMatch(/invalid/gi);
+  });
+
+  test("should handle age > 100", () => {
+    expect(validateUserInput("tlc", 101)).toMatch(/invalid/gi);
+  });
+
+  test("should handle both username and age are invalid", () => {
+    const result = validateUserInput("a", 1);
+    expect(result).toMatch(/invalid username/gi);
+    expect(result).toMatch(/invalid age/gi);
   });
 });
