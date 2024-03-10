@@ -142,16 +142,15 @@ describe("isValidUsername", () => {
 });
 
 describe("canDrive", () => {
-  test("should return true when age is above the legal min for the given country", () => {
-    expect(canDrive(18, "US")).toBe(true);
-  });
-
-  test("should return true when age is exactly the legal min for the given country", () => {
-    expect(canDrive(16, "US")).toBe(true);
-  });
-
-  test("should return false when age is below the legal min for the given country", () => {
-    expect(canDrive(15, "US")).toBe(false);
+  test.each([
+    { age: 17, country: "US", result: true },
+    { age: 16, country: "US", result: true },
+    { age: 15, country: "US", result: false },
+    { age: 18, country: "UK", result: true },
+    { age: 17, country: "UK", result: true },
+    { age: 16, country: "UK", result: false },
+  ])("should return $result for $age, $country", ({ age, country, result }) => {
+    expect(canDrive(age, country)).toBe(result);
   });
 
   test("should handle invalid country code", () => {
