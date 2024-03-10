@@ -1,5 +1,10 @@
 import { describe, expect, test } from "vitest";
-import { calculateDiscount, getCoupons, validateUserInput } from "../src/core";
+import {
+  calculateDiscount,
+  getCoupons,
+  isPriceInRange,
+  validateUserInput,
+} from "../src/core";
 
 describe("getCoupons", () => {
   test("should return an array of coupons", () => {
@@ -90,5 +95,21 @@ describe("validateUserInput", () => {
     const result = validateUserInput("a", 1);
     expect(result).toMatch(/invalid username/gi);
     expect(result).toMatch(/invalid age/gi);
+  });
+});
+
+describe("isPriceInRange", () => {
+  test("should return false when price is not in range", () => {
+    expect(isPriceInRange(6, 0, 5)).toBe(false);
+    expect(isPriceInRange(-6, 0, 5)).toBe(false);
+  });
+
+  test("should return true when price is at boundary", () => {
+    expect(isPriceInRange(5, 0, 5)).toBe(true);
+    expect(isPriceInRange(0, 0, 5)).toBe(true);
+  });
+
+  test("should return true when price is in range", () => {
+    expect(isPriceInRange(4, 0, 5)).toBe(true);
   });
 });
