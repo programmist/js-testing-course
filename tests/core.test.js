@@ -3,6 +3,7 @@ import {
   calculateDiscount,
   getCoupons,
   isPriceInRange,
+  isValidUsername,
   validateUserInput,
 } from "../src/core";
 
@@ -111,5 +112,30 @@ describe("isPriceInRange", () => {
 
   test("should return true when price is in range", () => {
     expect(isPriceInRange(4, 0, 5)).toBe(true);
+  });
+});
+
+describe("isValidUsername", () => {
+  const minLength = 5;
+  const maxLength = 15;
+  test("should return false when length of username is out of valid range", () => {
+    expect(isValidUsername("a".repeat(minLength - 1))).toBe(false);
+    expect(isValidUsername("a".repeat(maxLength + 1))).toBe(false);
+  });
+
+  test("should return true when length of username is within valid range", () => {
+    expect(isValidUsername("a".repeat((minLength + maxLength) / 2))).toBe(true);
+  });
+
+  test("should return true when length of username is exactly the min or max of valid range", () => {
+    expect(isValidUsername("a".repeat(minLength))).toBe(true);
+    expect(isValidUsername("a".repeat(maxLength))).toBe(true);
+  });
+
+  // FIXME: Typescript makes this obsolete
+  test("should return false when username is invalid type", () => {
+    expect(isValidUsername()).toBe(false);
+    expect(isValidUsername(1)).toBe(false);
+    expect(isValidUsername(" ".repeat(minLength + 1))).toBe(false);
   });
 });
