@@ -101,19 +101,20 @@ describe("validateUserInput", () => {
 });
 
 describe("isPriceInRange", () => {
-  test("should return false when price is not in range", () => {
-    expect(isPriceInRange(6, 0, 5)).toBe(false);
-    expect(isPriceInRange(-6, 0, 5)).toBe(false);
-  });
-
-  test("should return true when price is at boundary", () => {
-    expect(isPriceInRange(5, 0, 5)).toBe(true);
-    expect(isPriceInRange(0, 0, 5)).toBe(true);
-  });
-
-  test("should return true when price is in range", () => {
-    expect(isPriceInRange(4, 0, 5)).toBe(true);
-  });
+  const min = 0;
+  const max = 100;
+  test.each([
+    { scenario: "min < price < max", price: 50, result: true },
+    { scenario: "price == min", price: 0, result: true },
+    { scenario: "price == max", price: 100, result: true },
+    { scenario: "price > max", price: 101, result: false },
+    { scenario: "price < min", price: -1, result: false },
+  ])(
+    `should return $result when $scenario (price: $price, min: ${min}, max: ${max})`,
+    ({ price, result }) => {
+      expect(isPriceInRange(price, 0, 100)).toBe(result);
+    }
+  );
 });
 
 describe("isValidUsername", () => {
