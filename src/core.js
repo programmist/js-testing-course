@@ -78,10 +78,11 @@ export function canDrive(age, countryCode) {
 }
 
 // Lesson: Testing asynchronous code
-export function fetchData() {
+export function fetchData(count) {
+  if (!count || count < 1) return { reason: "Fetch failed: invalid count" };
   return new Promise((resolve) => {
     setTimeout(() => {
-      const data = [1, 2, 3];
+      const data = [...Array(count).keys()];
       resolve(data);
     });
   });
