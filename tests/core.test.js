@@ -1,5 +1,14 @@
-import { describe, expect, test } from "vitest";
 import {
+  describe,
+  expect,
+  test,
+  beforeEach,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "vitest";
+import {
+  Stack,
   calculateDiscount,
   canDrive,
   fetchData,
@@ -178,5 +187,80 @@ describe("fetchData", () => {
       expect(error.reason).toHaveProperty("reason");
       expect(error.reason).toMatch(/fail/i);
     }
+  });
+});
+
+describe("Stack test suite", () => {
+  beforeAll(() => {
+    console.log("beforeAll called");
+  });
+  beforeEach(() => {
+    console.log("beforeEach called");
+  });
+
+  test("should 1", () => {});
+  test("should 2", () => {});
+});
+
+describe("Stack", () => {
+  let stack;
+  beforeEach(() => {
+    stack = new Stack();
+  });
+
+  test("should throw error on empty stack pop", () => {
+    expect(() => stack.pop()).toThrow(/empty/i);
+  });
+
+  test("should throw error on empty stack peek", () => {
+    expect(() => stack.peek()).toThrow(/empty/i);
+  });
+
+  test("should add item to the stack", () => {
+    stack.push(5);
+
+    expect(stack.size()).toBe(1);
+  });
+
+  test("pop should remove and return item from the top of stack", () => {
+    stack.push(5);
+    stack.push(6);
+
+    const poppedItem = stack.pop();
+
+    expect(poppedItem).toBe(6);
+    expect(stack.size()).toBe(1);
+  });
+
+  test("peek should return item from the top of stack", () => {
+    stack.push(5);
+    stack.push(6);
+
+    expect(stack.peek()).toBe(6);
+    expect(stack.size()).toBe(2);
+    stack.pop();
+    expect(stack.peek()).toBe(5);
+    expect(stack.size()).toBe(1);
+  });
+
+  test("clear should remove all items from stack", () => {
+    stack.push(5);
+    stack.push(6);
+    stack.push(7);
+
+    expect(stack.size()).toBe(3);
+    stack.clear();
+    expect(stack.size()).toBe(0);
+  });
+
+  test("isEmpty should return true when stack is empty", () => {
+    expect(stack.size()).toBe(0);
+    expect(stack.isEmpty()).toBe(true);
+  });
+
+  test("isEmpty should return false when stack is not empty", () => {
+    stack.push(5);
+    expect(stack.size()).toBe(1);
+    expect(stack.isEmpty()).toBe(false);
   });
 });
