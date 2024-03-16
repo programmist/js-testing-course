@@ -1,12 +1,18 @@
 import { vi, test, expect, describe } from "vitest";
-import { getPriceInCurrency, getShippingInfo } from "../src/mocking";
+import {
+  getPriceInCurrency,
+  getShippingInfo,
+  renderPage,
+} from "../src/mocking";
 import { getExchangeRate } from "../src/libs/currency";
 import { getShippingQuote } from "../src/libs/shipping";
+import { trackPageView } from "../src/libs/analytics";
 
 // Mock functions in this imported file (getExchangeRate)
 // Note: this is run before the import
 vi.mock("../src/libs/currency");
 vi.mock("../src/libs/shipping");
+vi.mock("../src/libs/analytics");
 
 describe("Mocking Demonstrations", () => {
   test("mocking return value", () => {
@@ -68,5 +74,17 @@ describe('getShippingInfo"', () => {
     vi.mocked(getShippingQuote).mockReturnValue(null);
     const info = getShippingInfo("RUS");
     expect(info).toMatch(/unavailable/i);
+  });
+});
+
+describe("renderPage", () => {
+  test("should return correct content", async () => {
+    const result = await renderPage();
+    expect(result).toMatch(/content/i);
+  });
+
+  test("should return correct content", async () => {
+    await renderPage();
+    expect(trackPageView).toHaveBeenCalledWith("/home");
   });
 });
