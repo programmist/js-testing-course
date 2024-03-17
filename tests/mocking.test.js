@@ -3,16 +3,19 @@ import {
   getPriceInCurrency,
   getShippingInfo,
   renderPage,
+  submitOrder,
 } from "../src/mocking";
 import { getExchangeRate } from "../src/libs/currency";
 import { getShippingQuote } from "../src/libs/shipping";
 import { trackPageView } from "../src/libs/analytics";
+import { charge } from "../src/libs/payment";
 
 // Mock functions in this imported file (getExchangeRate)
 // Note: this is run before the import
 vi.mock("../src/libs/currency");
 vi.mock("../src/libs/shipping");
 vi.mock("../src/libs/analytics");
+vi.mock("../src/libs/payment");
 
 describe("Mocking Demonstrations", () => {
   test("mocking return value", () => {
@@ -87,4 +90,27 @@ describe("renderPage", () => {
     await renderPage();
     expect(trackPageView).toHaveBeenCalledWith("/home");
   });
+});
+
+describe("submitOrder", () => {
+  test("should successfully submit order when given correct info", async () => {
+    vi.mocked(charge).mockResolvedValue({ status: "success" });
+    const order = { totalAmount: 10 };
+    const cc = { creditCardNumber: "123-456-789" };
+
+    const result = await submitOrder(order, cc);
+
+    expect(result).toMatchObject({ success: true });
+    expect(charge).toHaveBeenCalledWith(cc, order.totalAmount);
+  });
+
+  test("should handle failed payment result", async () => {
+    vi.mocked(charge).mockResolvedValue({ status: "failed" });
+    const result = await submitOrder({}, {});
+    expect(result).toMatchObject({ success: false, error: "payment_error" });
+  });
+
+  // TODO: Adding Typescript makes this unnecessary
+  test("should handle incorrect order object type", () => {});
+  test("should handle incorrect payment object type", () => {});
 });
