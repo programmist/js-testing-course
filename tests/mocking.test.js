@@ -3,12 +3,14 @@ import {
   getPriceInCurrency,
   getShippingInfo,
   renderPage,
+  signUp,
   submitOrder,
 } from "../src/mocking";
 import { getExchangeRate } from "../src/libs/currency";
 import { getShippingQuote } from "../src/libs/shipping";
 import { trackPageView } from "../src/libs/analytics";
 import { charge } from "../src/libs/payment";
+import { sendEmail } from "../src/libs/email";
 
 // Mock functions in this imported file (getExchangeRate)
 // Note: this is run before the import
@@ -16,6 +18,13 @@ vi.mock("../src/libs/currency");
 vi.mock("../src/libs/shipping");
 vi.mock("../src/libs/analytics");
 vi.mock("../src/libs/payment");
+vi.mock("../src/libs/email", async (importOriginal) => {
+  const originalModule = await importOriginal();
+  return {
+    ...originalModule,
+    sendEmail: vi.fn(),
+  };
+});
 
 describe("Mocking Demonstrations", () => {
   test("mocking return value", () => {
@@ -113,4 +122,31 @@ describe("submitOrder", () => {
   // TODO: Adding Typescript makes this unnecessary
   test("should handle incorrect order object type", () => {});
   test("should handle incorrect payment object type", () => {});
+});
+
+describe("signUp", () => {
+  const email = "email@domain.com";
+
+  test("should return false if email is not valid", async () => {
+    const result = await signUp("123");
+    expect(result).toBe(false);
+  });
+
+  test("should return true if email is` valid", async () => {
+    const result = await signUp(email);
+    expect(result).toBe(true);
+  });
+
+  test("should send welcome email email is` valid", async () => {
+    const result = await signUp(email);
+
+    // Attempt #1. Can do better
+    // expect(sendEmail).toHaveBeenCalledWith(email, "Welcome aboard!");
+
+    // Attempt #2
+    const args = vi.mocked(sendEmail).mock.calls[0];
+    expect(sendEmail).toHaveBeenCalled();
+    expect(args[0]).toBe(email);
+    expect(args[1]).toMatch(/welcome/i);
+  });
 });
