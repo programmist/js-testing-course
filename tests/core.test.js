@@ -1,12 +1,4 @@
-import {
-  describe,
-  expect,
-  test,
-  beforeEach,
-  beforeAll,
-  afterEach,
-  afterAll,
-} from "vitest";
+import { describe, expect, test, beforeEach, beforeAll } from "vitest";
 import {
   Stack,
   calculateDiscount,
@@ -123,7 +115,7 @@ describe("isPriceInRange", () => {
     `should return $result when $scenario (price: $price, min: ${min}, max: ${max})`,
     ({ price, result }) => {
       expect(isPriceInRange(price, 0, 100)).toBe(result);
-    },
+    }
   );
 });
 
@@ -170,7 +162,7 @@ describe("canDrive", () => {
 });
 
 describe("fetchData", () => {
-  test("should return an array of numbers", async () => {
+  test("should return an array of numbers", async() => {
     const r1 = await fetchData(1);
     expect(r1).instanceOf(Array);
     expect(r1.length).toBe(1);
@@ -180,9 +172,9 @@ describe("fetchData", () => {
     expect(r2.length).toBe(5);
   });
 
-  test("should handle invalid count", async () => {
+  test("should handle invalid count", async() => {
     try {
-      const result = await fetchData(0);
+      await fetchData(0);
     } catch (error) {
       expect(error.reason).toHaveProperty("reason");
       expect(error.reason).toMatch(/fail/i);

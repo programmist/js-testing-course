@@ -1,4 +1,4 @@
-import { vi, test, expect, describe, beforeEach } from "vitest";
+import { vi, test, expect, describe } from "vitest";
 import {
   getDiscount,
   getPriceInCurrency,
@@ -22,7 +22,7 @@ vi.mock("../src/libs/currency");
 vi.mock("../src/libs/shipping");
 vi.mock("../src/libs/analytics");
 vi.mock("../src/libs/payment");
-vi.mock("../src/libs/email", async (importOriginal) => {
+vi.mock("../src/libs/email", async(importOriginal) => {
   const originalModule = await importOriginal();
   return {
     ...originalModule,
@@ -37,13 +37,13 @@ describe("Mocking Demonstrations", () => {
     expect(greet()).toBe("hello");
   });
 
-  test("mocking return Promise", async () => {
+  test("mocking return Promise", async() => {
     const greet = vi.fn();
     greet.mockResolvedValue("hello");
     expect(await greet()).toBe("hello");
   });
 
-  test("mocking implementation", async () => {
+  test("mocking implementation", async() => {
     const greet = vi.fn();
     greet.mockImplementation((name) => {
       return `Hello ${name}`;
@@ -51,7 +51,7 @@ describe("Mocking Demonstrations", () => {
     expect(await greet("Tony")).toBe("Hello Tony");
   });
 
-  test("detecting mock calls", async () => {
+  test("detecting mock calls", async() => {
     const greet = vi.fn();
     greet("test");
     expect(greet).toHaveBeenCalledOnce();
@@ -61,7 +61,7 @@ describe("Mocking Demonstrations", () => {
   });
 });
 
-describe('getPriceInCurrency"', () => {
+describe("getPriceInCurrency\"", () => {
   test("should return price in target currency", () => {
     // JS doesn't know this file has been mocked
     // Must use `vi.mocked` so that autocompletion works
@@ -71,7 +71,7 @@ describe('getPriceInCurrency"', () => {
   });
 });
 
-describe('getShippingInfo"', () => {
+describe("getShippingInfo\"", () => {
   test("should return the shipping info for the given destination", () => {
     vi.mocked(getShippingQuote).mockReturnValue({
       cost: 99,
@@ -94,19 +94,19 @@ describe('getShippingInfo"', () => {
 });
 
 describe("renderPage", () => {
-  test("should return correct content", async () => {
+  test("should return correct content", async() => {
     const result = await renderPage();
     expect(result).toMatch(/content/i);
   });
 
-  test("should return correct content", async () => {
+  test("should return correct content", async() => {
     await renderPage();
     expect(trackPageView).toHaveBeenCalledWith("/home");
   });
 });
 
 describe("submitOrder", () => {
-  test("should successfully submit order when given correct info", async () => {
+  test("should successfully submit order when given correct info", async() => {
     vi.mocked(charge).mockResolvedValue({ status: "success" });
     const order = { totalAmount: 10 };
     const cc = { creditCardNumber: "123-456-789" };
@@ -117,7 +117,7 @@ describe("submitOrder", () => {
     expect(charge).toHaveBeenCalledWith(cc, order.totalAmount);
   });
 
-  test("should handle failed payment result", async () => {
+  test("should handle failed payment result", async() => {
     vi.mocked(charge).mockResolvedValue({ status: "failed" });
     const result = await submitOrder({}, {});
     expect(result).toMatchObject({ success: false, error: "payment_error" });
@@ -136,18 +136,18 @@ describe("signUp", () => {
   //   vi.mocked(sendEmail).mockClear();
   // });
 
-  test("should return false if email is not valid", async () => {
+  test("should return false if email is not valid", async() => {
     const result = await signUp("123");
     expect(result).toBe(false);
   });
 
-  test("should return true if email is` valid", async () => {
+  test("should return true if email is` valid", async() => {
     const result = await signUp(email);
     expect(result).toBe(true);
   });
 
-  test("should send welcome email email is` valid", async () => {
-    const result = await signUp(email);
+  test("should send welcome email email is` valid", async() => {
+    await signUp(email);
 
     // Attempt #1. Can do better
     // expect(sendEmail).toHaveBeenCalledWith(email, "Welcome aboard!");
@@ -161,7 +161,7 @@ describe("signUp", () => {
 });
 
 describe("login", () => {
-  test("should email onetime login code", async () => {
+  test("should email onetime login code", async() => {
     const email = "test@example.com";
     const spy = vi.spyOn(security, "generateCode");
 
