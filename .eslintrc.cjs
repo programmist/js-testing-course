@@ -15,6 +15,7 @@ module.exports = {
       },
     },
   ],
+  ignorePatterns: ["dist/"],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
