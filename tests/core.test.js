@@ -123,7 +123,7 @@ describe("isPriceInRange", () => {
     `should return $result when $scenario (price: $price, min: ${min}, max: ${max})`,
     ({ price, result }) => {
       expect(isPriceInRange(price, 0, 100)).toBe(result);
-    }
+    },
   );
 });
 
